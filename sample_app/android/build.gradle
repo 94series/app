@@ -1,0 +1,35 @@
+buildscript {
+    repositories {
+        // 第一阶段：华为云镜像 (同步频率更高)
+        maven { url 'https://repo.huaweicloud.com/repository/maven/' }
+        // 第二阶段：补充阿里云其他仓库
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        // 第三阶段：Google官方仓库 (需VPN)
+        maven { url 'https://maven.google.com' }
+        maven { url 'https://jitpack.io' }  // 小众库专用
+    }
+}
+
+allprojects {
+    repositories {
+        // 关键：仓库顺序直接影响解析优先级
+        maven { url 'https://repo.huaweicloud.com/repository/maven/' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.google.com' }
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+rootProject.buildDir = "../build"
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
